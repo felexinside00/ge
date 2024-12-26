@@ -42,8 +42,11 @@ def read_approval_file():
     if os.path.exists(APPROVAL_FILE):
         with open(APPROVAL_FILE, 'r') as file:
             for line in file:
-                key, status = line.strip().split(',')
-                approvals[key] = status
+                line = line.strip()
+                # Skip empty lines or lines that don't contain a comma
+                if line and ',' in line:
+                    key, status = line.split(',', 1)  # Split only on the first comma
+                    approvals[key] = status
     return approvals
 
 # Write a new key with 'Pending' status to the file
@@ -161,6 +164,4 @@ def admin():
     ''')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
-
-
+    app.run(debug=True, host='0.0.0.0', port=5000)
