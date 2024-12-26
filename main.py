@@ -111,6 +111,7 @@ def check_status():
 @app.route('/admin', methods=['GET', 'POST'])
 @requires_auth
 def admin():
+    approvals = read_approval_file()  # Ensure that approvals data is fetched
     if request.method == 'POST':
         user_key = request.form['user_key']
         action = request.form['action']
@@ -129,7 +130,8 @@ def admin():
             <p>{{ message }}</p>
             <a href="/admin">Go back</a>
         ''', message=message)
-    approvals = read_approval_file()
+    
+    # Pass approvals to the template
     return render_template_string('''
         <h1>Admin Panel</h1>
         <table border="1">
@@ -161,7 +163,7 @@ def admin():
             </tr>
             {% endfor %}
         </table>
-    ''')
+    ''', approvals=approvals)  # Ensure approvals are passed to the template
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
